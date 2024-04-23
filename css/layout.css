@@ -1,0 +1,355 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html {
+    scroll-behavior: smooth;
+}
+body {
+    background: #e5e5e5;
+}
+header {
+    background: #262626;
+}
+.banner {
+    width: 100%;
+    height: 25vw;
+    background: url("../img/banners/banner-gray-ferrari-f430-outdoors-01.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+.estoque {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+
+.barra-superior {
+    min-height: 105px;
+    max-height: 190px;
+    height: 17vw;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.slogan {
+    color: whitesmoke;
+    position: absolute;
+    /*font-size: calc(25 + ((17-25) / (1+pow(2.71828, (-0.05 * (1920 - 1050))))));*/
+    margin-left: calc(9vw + 20px);
+    margin-top: 7.86vw;
+}
+.fale-conosco {
+    text-align: right;
+    width: 175px;
+    float: right;
+    margin-right: 10px;
+    margin-top: 2.5vw;
+}
+.header-img {
+    position: absolute;
+    width: 9vw;
+    margin-left: 10px;
+    margin-top: 1vw;
+}
+.nav-bar {
+    float: right;
+    margin-top: 12.26vw;
+    font-weight: lighter;
+}
+
+
+.grade-ofertas {
+    display: grid;
+    grid-gap: 20px;
+    grid-row-gap: 40px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-bottom: 125px;
+}
+.bloco-veiculo {
+    position: relative;
+    padding: 10px 0;
+    max-width: 250px;
+    background: white;
+    border: #9a9a9a solid 0.25px;
+    height: 390px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.veiculo-img {
+    width: 250px;
+    padding: 0 10px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+
+p, a {
+    font-family: "Bahnschrift";
+    margin: 7px;
+}
+a {
+    color: whitesmoke;
+}
+a:hover {
+    color: #ffdc0c;
+}
+a:link, a:visited, a:active {
+    text-decoration: none;
+}
+h1 {
+    color: whitesmoke;
+    /*font-size: 3vw;*/
+    position: absolute;
+    margin-left: calc(9vw + 20px);
+    margin-top: 4.3vw;
+    font-family: "Bahnschrift";
+}
+h2 {
+    color: black;
+    text-align: left;
+    /*font-size: 2.85vw;*/
+    padding: 40px 40px;
+    font-family: "Bahnschrift";
+}
+h3 {
+    color: black;
+    font-family: "Bahnschrift";
+    line-break: normal;
+}
+
+
+hr.inner-hr {
+    position: absolute;
+    border: #9a9a9a solid 0.25px;
+    width: 90%;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    bottom: 100px;
+}
+hr.outer-hr {
+    border: 5px solid white;
+}
+.yellow-text {
+    color: #ffdc0c;
+}
+.active-section {
+    color: #fff1a5;
+    font-weight: bold;
+}
+.veiculo-titulo {
+    text-align: center;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 15px 0;
+}
+.bloco-veiculo-descricao {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    bottom: 15px;
+}
+.veiculo-descricao {
+    font-size: 18px;
+    line-height: 15px;
+    text-align: center;
+    font-weight: lighter;
+    bottom: 0;
+}
+#numero-telefone {
+    font-family: "Calibri";
+}
+
+
+
+/* redimensionamento dedicado ao conteúdo geral da página */
+@media screen and (max-width: 600px) { /* configs para tela REDUZIDA */
+    .barra-superior {
+        height: 160px;
+    }
+    .slogan {
+        color: transparent;
+    }
+    .fale-conosco {
+        width: 210px;
+        margin-top: 12px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .nav-bar {
+        width: 275px;
+        margin-top: 123.56px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .header-img {
+        width: 54px;
+        margin-top: 46px;
+    }
+    .banner {
+        height: 0;
+    }
+
+
+    p, a {
+        font-size: 16px;
+        margin: 5px;
+    }
+    h1 {
+        font-size: 25px;
+        margin-left: 74px;
+        margin-top: 65.8px;
+    }
+    h2 {
+        font-size: 25px;
+        text-align: center;
+    }
+    #texto-whatsapp {
+        display: block;
+        float: left;
+        font-size: 17px;
+    }
+    #numero-telefone {
+        display: block;
+        font-size: 16px;
+    }
+}
+@media screen and (min-width: 601px) and (max-width: 1100px) { /* config MÉDIA BAIXA */
+    .fale-conosco {
+        width: 160px;
+    }
+    .slogan {
+        font-size: 13px;
+        margin-top: 8vw;
+    }
+
+
+    p, a {
+        font-size: 18px;
+    }
+    h1, h2 {
+        font-size: 25px;
+    }
+    #numero-telefone {
+        font-size: 16px;
+    }
+}
+@media screen and (min-width: 1101px) and (max-width: 1499px) { /* config MÉDIA ALTA */
+    .slogan {
+        font-size: 16.6px;
+    }
+    .nav-bar {
+        margin-top: 135px;
+    }
+
+
+    p, a {
+        font-size: 20px;
+    }
+    h1 {
+        font-size: 35px;
+    }
+    h2 {
+        font-size: 32.75px;
+    }
+    #numero-telefone {
+        font-size: 18px;
+    }
+}
+@media screen and (min-width: 1500px) { /* configs para tela AUMENTADA */
+    .slogan {
+        font-size: 18.6px;
+        margin-left: 155px;
+        margin-top: 118px;
+    }
+    .header-img {
+        width: 135px;
+        margin-top: 15px;
+    }
+    .fale-conosco {
+        margin-top: 37.5px;
+    }
+    .nav-bar {
+        margin-top: 135px;
+    }
+    .banner {
+        height: 375px;
+    }
+
+
+    p, a {
+        font-size: 20px;
+    }
+    h1 {
+        font-size: 45px;
+        margin-left: 155px;
+        margin-top: 64.5px;
+    }
+    h2 {
+        font-size: 42.75px;
+    }
+    #numero-telefone {
+        font-size: 18px;
+    }
+}
+
+
+
+/* redimensionamento dedicado à grade de ofertas */
+@media screen and (max-width: 539px) {
+    .grade-ofertas {
+        grid-template-columns: 1fr;
+    }
+}
+@media screen and (min-width: 540px) and (max-width: 809px) {
+    .grade-ofertas {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+@media screen and (min-width: 810px) and (max-width: 1079px) {
+    .grade-ofertas {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+@media screen and (min-width: 1080px) {
+    .grade-ofertas {
+        margin-left: auto;
+        margin-right: auto;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+}
+
+
+
+@font-face {
+    font-family: "Bahnschrift";
+    src: url("../fonts/BAHNSCHRIFT.TTF");
+}
+
+@font-face {
+    font-family: "Candara";
+    src: url("../fonts/Candara.ttf");
+}
+
+@font-face {
+    font-family: "Calibri";
+    src: url("../fonts/calibri.ttf");
+}
