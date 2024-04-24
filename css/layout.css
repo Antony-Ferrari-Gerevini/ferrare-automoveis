@@ -63,6 +63,44 @@ header {
 }
 
 
+.barra-filtros {
+    display: grid;
+    grid-template-columns: repeat(20, 1fr);
+    padding: 20px 20px;
+    margin-bottom: 40px;
+    margin-left: 15px;
+    margin-right: 15px;
+    background: white;
+    border: #9a9a9a solid 0.25px;
+}
+.filter-menu-block {
+    margin-top: 7.5px;
+    margin-bottom: 7.5px;
+    font-family: "Candara";
+    font-size: 16px;
+}
+.nome-carro-input {
+    padding: 4px;
+    width: 95%;
+    margin-top: 2px;
+    font-family: "Candara";
+    font-size: 16px;
+}
+.filter-dropdown {
+    padding: 5px;
+    margin-top: 2px;
+    width: 95%;
+    font-family: "Candara";
+    font-size: 16px;
+}
+button.filter-menu.block {
+    width: 95%;
+    margin-top: 7.5px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
 .grade-ofertas {
     display: grid;
     grid-gap: 20px;
@@ -313,23 +351,56 @@ hr.outer-hr {
 
 
 
-/* redimensionamento dedicado à grade de ofertas */
+/* redimensionamento dedicado à grade de ofertas e barra de filtros */
 @media screen and (max-width: 539px) {
+    .filter-menu-block:nth-child(-n + 4) {
+        grid-column: span 20;
+    }
+    .filter-menu-block:nth-child(5) {
+        grid-column: span 8;
+    }
     .grade-ofertas {
         grid-template-columns: 1fr;
     }
 }
 @media screen and (min-width: 540px) and (max-width: 809px) {
+    .filter-menu-block:nth-child(-n + 4) {
+        grid-column: span 10;
+    }
+    .filter-menu-block:nth-child(5) {
+        grid-column: span 5;
+    }
     .grade-ofertas {
         grid-template-columns: 1fr 1fr;
     }
 }
 @media screen and (min-width: 810px) and (max-width: 1079px) {
+    .filter-menu-block:nth-child(1) {
+        grid-column: span 7;
+    }
+    .filter-menu-block:nth-child(2) {
+        grid-column: span 5;
+    }
+    .filter-menu-block:nth-child(1n + 3) {
+        grid-column: span 4;
+    }
     .grade-ofertas {
         grid-template-columns: 1fr 1fr 1fr;
     }
 }
 @media screen and (min-width: 1080px) {
+    .filter-menu-block:nth-child(1) {
+        grid-column: span 7;
+    }
+    .filter-menu-block:nth-child(2) {
+        grid-column: span 4;
+    }
+    .filter-menu-block:nth-child(1n + 3) {
+        grid-column: span 3;
+    }
+    button.filter-menu.block {
+        margin-top: 0;
+    }
     .grade-ofertas {
         margin-left: auto;
         margin-right: auto;

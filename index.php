@@ -17,6 +17,8 @@ try {
 try {
     $banners_list = mysqli_query($connection, "SELECT * FROM banners;");
     $vehicle_list = mysqli_query($connection, "SELECT * FROM veiculos;");
+    $marca_list = mysqli_query($connection, "SELECT DISTINCT marca FROM veiculos;");
+    $linha_list = mysqli_query($connection, "SELECT DISTINCT linha FROM veiculos;");
 } catch (Exception) {
     echo "SQL ERROR " . mysqli_error($connection);
 }
@@ -32,7 +34,9 @@ $estoque_header = file_get_contents("html/estoque_header.html");
 echo $header;
 echo $banner;
 echo $estoque_header;
+create_filter_dropdown_menu($marca_list);
 
+echo '<div class="grade-ofertas">';
 while ($veiculo = mysqli_fetch_assoc($vehicle_list)) { // Generating blocks for the vehicle grid
     create_vehicle_block($veiculo);
 }
