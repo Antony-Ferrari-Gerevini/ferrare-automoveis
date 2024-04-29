@@ -16,9 +16,10 @@ try {
 // Creating variables with data from the database
 try {
     $banners_list = mysqli_query($connection, "SELECT * FROM banners;");
-    $vehicle_list = mysqli_query($connection, "SELECT * FROM veiculos;");
-    $marca_list = mysqli_query($connection, "SELECT DISTINCT marca FROM veiculos;");
-    $linha_list = mysqli_query($connection, "SELECT DISTINCT linha FROM veiculos;");
+    $veiculo_list = mysqli_query($connection, "SELECT * FROM veiculo;");
+    $marca_list = mysqli_query($connection, "SELECT * FROM marca;");
+    $linha_list = mysqli_query($connection, "SELECT * FROM linha;");
+    $fotos_veiculo_list = mysqli_query($connection, "SELECT * FROM fotos_veiculo;");
 } catch (Exception) {
     echo "SQL ERROR " . mysqli_error($connection);
 }
@@ -37,8 +38,23 @@ echo $estoque_header;
 create_filter_dropdown_menu($marca_list);
 
 echo '<div class="grade-ofertas">';
-while ($veiculo = mysqli_fetch_assoc($vehicle_list)) { // Generating blocks for the vehicle grid
-    create_vehicle_block($veiculo);
+while ($veiculo = mysqli_fetch_assoc($veiculo_list)) { // Generating blocks for the vehicle grid
+    $id = $veiculo['id'];
+
+    // Doing SQL injection the safe way
+    $marca = $connection->prepare("SELECT m.nome FROM veiculo AS v INNER JOIN linha AS l ON l.id = v.id_linha INNER JOIN marca AS m ON m.id = l.id_marca WHERE v.id = ?;");
+    $marca->bind_param("i", $id);
+    $marca->execute();
+    $marca = $marca->get_result();
+    $marca = $marca->fetch_assoc();
+
+    $foto_principal = $connection->prepare("SELECT fv.diretorio_fotos, fv.foto_principal FROM veiculo AS v INNER JOIN fotos_veiculo AS fv ON fv.id = ?;");
+    $foto_principal->bind_param("i", $id);
+    $foto_principal->execute();
+    $foto_principal = $foto_principal->get_result();
+    $foto_principal = $foto_principal->fetch_assoc();
+
+    create_vehicle_block($veiculo, $marca, $foto_principal);
 }
 
 echo "</div>";

@@ -12,8 +12,8 @@ function create_filter_dropdown_menu($marca_list) {
     echo '<label for="dropdown-marca">Marca:</label>';
     echo '<select name="marca" id="dropdown-marca" class="filter-dropdown">';
     echo '<option value="">Marca</option>';
-    while ($marca = mysqli_fetch_row($marca_list)) { 
-        ?><option value="<?=strtolower($marca[0])?>"><?=$marca[0]?></option><?php
+    while ($marca = mysqli_fetch_assoc($marca_list)) { 
+        ?><option value="<?=strtolower($marca['nome'])?>"><?=$marca['nome']?></option><?php
     }
     echo '</select></div>';
     
@@ -37,7 +37,7 @@ function create_filter_dropdown_menu($marca_list) {
     echo '</div>';
 }
 
-function create_vehicle_block($veiculo) {
+function create_vehicle_block($veiculo, $marca, $foto_principal) {
     if ($veiculo['ano'] == NULL) {
         $ano = "N/D";
     } else {
@@ -52,11 +52,11 @@ function create_vehicle_block($veiculo) {
 
     ?>
     <div class="bloco-veiculo">
-        <img class="veiculo-img" src="<?=$veiculo['caminho_foto']?>">
+        <img class="veiculo-img" src="<?="img/veiculos/" . $foto_principal['diretorio_fotos'] . $foto_principal['foto_principal']?>">
         <h3 class="veiculo-titulo"><?=$veiculo['nome']?></h3>
         <hr class="inner-hr">
         <div class="bloco-veiculo-descricao">
-            <p class="veiculo-descricao">Marca: <?=$veiculo['marca']?></p>
+            <p class="veiculo-descricao">Marca: <?=$marca['nome']?></p>
             <p class="veiculo-descricao">Ano: <?=$ano?></p>
             <p class="veiculo-descricao">Preço: <?=$preco?></p>
         </div>
