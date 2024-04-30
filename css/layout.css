@@ -1,3 +1,4 @@
+/* general elements */
 * {
     margin: 0;
     padding: 0;
@@ -8,8 +9,10 @@ html {
 }
 body {
     background: #e5e5e5;
+    display: flex;
+    flex-direction: column;
 }
-header {
+header, footer {
     background: #262626;
 }
 .banner {
@@ -27,8 +30,8 @@ header {
 }
 
 
-
-.barra-superior {
+/* barra superior */
+.barra-superior, .barra-inferior {
     min-height: 105px;
     max-height: 190px;
     height: 17vw;
@@ -63,6 +66,7 @@ header {
 }
 
 
+/*  */
 .barra-filtros {
     display: grid;
     grid-template-columns: repeat(20, 1fr);
@@ -129,14 +133,25 @@ button.filter-menu.block {
 
 
 
+.footer {
+    justify-content: space-between;
+}
+.fale-conosco-footer {
+    padding: 25px 0;
+    display: inline-block;
+}
+
+
+
 p, a {
+    color: black;
     font-family: "Bahnschrift";
     margin: 7px;
 }
-a {
+a.header-footer-hyperlinks {
     color: whitesmoke;
 }
-a:hover {
+a.header-footer-hyperlinks:hover {
     color: #ffdc0c;
 }
 a:link, a:visited, a:active {
@@ -160,6 +175,7 @@ h2 {
 h3 {
     color: black;
     font-family: "Bahnschrift";
+    font-size: 19px;
     line-break: normal;
 }
 

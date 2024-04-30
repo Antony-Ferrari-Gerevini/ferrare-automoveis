@@ -1,5 +1,12 @@
 <?php
 
+// Adds the "?page=home" query string to the URL if there's none
+if (empty($_SERVER['QUERY_STRING'])) {
+    header("Location: {$_SERVER['PHP_SELF']}?pagina=home");
+    exit();
+}
+
+// Requires PHP file with functions
 require "php/functions.php";
 
 // Establishing a connection to MySQL Server
@@ -16,10 +23,10 @@ try {
 // Creating variables with data from the database
 try {
     $banners_list = mysqli_query($connection, "SELECT * FROM banners;");
-    $veiculo_list = mysqli_query($connection, "SELECT * FROM veiculo;");
-    $marca_list = mysqli_query($connection, "SELECT * FROM marca;");
-    $linha_list = mysqli_query($connection, "SELECT * FROM linha;");
-    $fotos_veiculo_list = mysqli_query($connection, "SELECT * FROM fotos_veiculo;");
+    $vehicle_list = mysqli_query($connection, "SELECT * FROM veiculo;");
+    $brand_list = mysqli_query($connection, "SELECT * FROM marca;");
+    $model_list = mysqli_query($connection, "SELECT * FROM linha;");
+    $vehicle_photos_list = mysqli_query($connection, "SELECT * FROM fotos_veiculo;");
 } catch (Exception) {
     echo "SQL ERROR " . mysqli_error($connection);
 }
@@ -27,35 +34,25 @@ try {
 
 
 // Saving HTML contents to variables
-$header = file_get_contents("html/header.html");
-$banner = file_get_contents("html/banner.html");
-$estoque_header = file_get_contents("html/estoque_header.html");
+$header = file_get_contents("static/header.html");
+$footer = file_get_contents("static/footer.html");
+$banner = file_get_contents("static/banner.html");
+$stock_header = file_get_contents("static/estoque_header.html");
+$location = file_get_contents("static/localizacao.html");
 
 // Displaying content variables
 echo $header;
 echo $banner;
-echo $estoque_header;
-create_filter_dropdown_menu($marca_list);
 
-echo '<div class="grade-ofertas">';
-while ($veiculo = mysqli_fetch_assoc($veiculo_list)) { // Generating blocks for the vehicle grid
-    $id = $veiculo['id'];
+if ($_GET['pagina'] === "home") {
+    echo $stock_header;
+    create_filter_dropdown_menu($brand_list);
+    create_vehicle_grid($vehicle_list, $connection);
+}
 
-    // Doing SQL injection the safe way
-    $marca = $connection->prepare("SELECT m.nome FROM veiculo AS v INNER JOIN linha AS l ON l.id = v.id_linha INNER JOIN marca AS m ON m.id = l.id_marca WHERE v.id = ?;");
-    $marca->bind_param("i", $id);
-    $marca->execute();
-    $marca = $marca->get_result();
-    $marca = $marca->fetch_assoc();
-
-    $foto_principal = $connection->prepare("SELECT fv.diretorio_fotos, fv.foto_principal FROM veiculo AS v INNER JOIN fotos_veiculo AS fv ON fv.id = ?;");
-    $foto_principal->bind_param("i", $id);
-    $foto_principal->execute();
-    $foto_principal = $foto_principal->get_result();
-    $foto_principal = $foto_principal->fetch_assoc();
-
-    create_vehicle_block($veiculo, $marca, $foto_principal);
+if ($_GET['pagina'] === "localizacao") {
+    echo $location;
 }
 
 echo "</div>";
-echo "Teste";
+echo $footer;

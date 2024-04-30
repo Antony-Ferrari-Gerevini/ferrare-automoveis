@@ -37,6 +37,37 @@ function create_filter_dropdown_menu($marca_list) {
     echo '</div>';
 }
 
+function create_vehicle_grid($veiculo_list, $connection) {
+    echo '<div class="grade-ofertas">';
+
+    $info_list = [];
+    while ($vehicle = mysqli_fetch_assoc($veiculo_list)) { // Generating blocks for the vehicle grid
+        $id = $vehicle['id'];
+
+        // Doing SQL injection the safe way
+        $brand = $connection->prepare("SELECT m.nome FROM veiculo AS v INNER JOIN linha AS l ON l.id = v.id_linha INNER JOIN marca AS m ON m.id = l.id_marca WHERE v.id = ?;");
+        $brand->bind_param("i", $id);
+        $brand->execute();
+        $brand = $brand->get_result();
+        $brand = $brand->fetch_assoc();
+
+        $main_photo = $connection->prepare("SELECT fv.diretorio_fotos, fv.foto_principal FROM veiculo AS v INNER JOIN fotos_veiculo AS fv ON fv.id = ?;");
+        $main_photo->bind_param("i", $id);
+        $main_photo->execute();
+        $main_photo = $main_photo->get_result();
+        $main_photo = $main_photo->fetch_assoc();
+
+        array_push($info_list, ["vehicle" => $vehicle, "brand" => $brand, "main_photo" => $main_photo]);
+    }
+
+    foreach ($info_list as $info) {
+        create_vehicle_block($info["vehicle"], $info["brand"], $info["main_photo"]);
+    }
+
+    echo '<script src="scripts/script.js"></script>';
+    echo "</div>";
+}
+
 function create_vehicle_block($veiculo, $marca, $foto_principal) {
     if ($veiculo['ano'] == NULL) {
         $ano = "N/D";
@@ -51,7 +82,7 @@ function create_vehicle_block($veiculo, $marca, $foto_principal) {
     }
 
     ?>
-    <div class="bloco-veiculo">
+    <a class="bloco-veiculo" href="#">
         <img class="veiculo-img" src="<?="img/veiculos/" . $foto_principal['diretorio_fotos'] . $foto_principal['foto_principal']?>">
         <h3 class="veiculo-titulo"><?=$veiculo['nome']?></h3>
         <hr class="inner-hr">
@@ -60,6 +91,6 @@ function create_vehicle_block($veiculo, $marca, $foto_principal) {
             <p class="veiculo-descricao">Ano: <?=$ano?></p>
             <p class="veiculo-descricao">Preço: <?=$preco?></p>
         </div>
-    </div>
+    </a>
     <?php
 }
