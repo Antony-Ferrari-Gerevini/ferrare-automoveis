@@ -1,14 +1,24 @@
 <?php
 
-// Establishing a connection to MySQL Server
-$server = "localhost";
-$user = "antony";
-$password = 'adminTERRIBLEpa$$w0rd';
+/*
+    This PHP file with functions shall one day become a database class with all necessary properties built-in.
+*/
 
-try {
-    $connection = mysqli_connect($server, $user, $password, "ferrare_automoveis_db");
-} catch (Exception) {
-    echo "<script>console.logNão foi possível conectar o banco de dados.</script> " . mysqli_connect_error();
+
+
+/**Stablishes a connection to a preset MySQL server and returns it */
+function connectToDatabase() {
+    $server   = "localhost";
+    $user     = "antony";
+    $password = 'adminTERRIBLEpa$$w0rd';
+    $database = "ferrare_automoveis_db";
+
+    $connection = mysqli_connect($server, $user, $password, $database);
+    return $connection;
 }
 
-// faz um código em JS para o console.log acima
+/**Performs a 'SELECT * FROM' query on the given table and returns the results */
+function selectAllFromTable($connection, $tableName) {
+    $selection = mysqli_query($connection, "SELECT * FROM $tableName;");
+    return $selection;
+}
