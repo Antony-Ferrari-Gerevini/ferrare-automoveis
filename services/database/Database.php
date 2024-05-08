@@ -12,87 +12,9 @@
     TODO: método 'prepareDeleteQuery()'
 */
 
-
-
-/** Stablishes a connection to a preset MySQL server and returns it */
-function connectToDatabase() {
-    $server   = "localhost";
-    $user     = "antony";
-    $password = 'adminTERRIBLEpa$$w0rd';
-    $database = "ferrare_automoveis_db";
-
-    $connection = mysqli_connect($server, $user, $password, $database);
-    return $connection;
-}
-
-/** Performs a 'SELECT * FROM' query on the given table and returns the results */
-function selectAllFromTable($connection, $table) {
-    $selection = mysqli_query($connection, "SELECT * FROM {$table};");
-    return $selection;
-}
-
-function prepareSelectQuery($table, $queryArgs=[]) {
-    $query = "SELECT";    
-    extract($queryArgs);
-
-    // valuesSelected
-    if (isset($valuesSelected)) {
-        $valuesSelected = (array)$valuesSelected;
-        $value = array_shift($valuesSelected);
-        $query .= " {$value}";
-
-        if (count($valuesSelected) > 0) {
-            foreach ($valuesSelected as $value) {
-                $query .= ", {$value}";
-            }
-        }
-    } else {
-        $query .= " *";
-    }
-    $query .= " FROM {$table}";
-
-    // order by
-    if (isset($orderBy)) {
-        $value = $orderBy;
-        $query .= " ORDER BY {$value}";
-    }
-    
-    // group by
-    if (isset($groupBy)) {
-        $value = $groupBy;
-        $query .= " GROUP BY {$value}";
-    }
-
-    // inner join
-    if (isset($innerJoin)) {
-        foreach ($innerJoin as $value) {
-            $query .= " INNER JOIN {$value}";
-        }
-    }
-
-    // end
-    $query .= ";";
-    return $query;
-}
-
-/** Performs SQL Injection on given query variable, executes it and then returns it (requires char for the type of the attribute and the new value) */
-function sqlInjectionAndExecuteAndFetch($queryVariable, $typeChar, $newValue) {
-    $queryVariable->bind_param($typeChar, $newValue);
-    $queryVariable->execute();
-    $queryVariable = $queryVariable->get_result();
-    $queryVariable = $queryVariable->fetch_assoc();
-    return $queryVariable;
-}
-
-
-
-
-
 class SQLInjectionException extends Exception {}
 class SQLExecutionException extends Exception {}
 class SQLPreparationException extends Exception {}
-
-
 
 class Database {
     private $server;
