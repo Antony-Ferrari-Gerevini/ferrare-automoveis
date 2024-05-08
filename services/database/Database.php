@@ -88,6 +88,12 @@ function sqlInjectionAndExecuteAndFetch($queryVariable, $typeChar, $newValue) {
 
 
 
+class SQLInjectionException extends Exception {}
+class SQLExecutionException extends Exception {}
+class SQLPreparationException extends Exception {}
+
+
+
 class Database {
     private $server;
     private $user;
@@ -96,11 +102,16 @@ class Database {
     private $connection;
 
     function __construct($server, $user, $password, $database) {
-        $this->server     = $server;
-        $this->user       = $user;
-        $this->password   = $password;
-        $this->database   = $database;
-        $this->connection = $this->connectToDatabase($this->server, $this->user, $this->password, $this->database);
+        $this->server   = $server;
+        $this->user     = $user;
+        $this->password = $password;
+        $this->database = $database;
+        
+        try {
+            $this->connection = $this->connectToDatabase($this->server, $this->user, $this->password, $this->database);
+        } catch (Exception $e) {
+            echo '<script>console.log("' . $e->getMessage() . '")</script>';
+        }
     }
 
     /** Stablishes a connection to a MySQL server and returns it */
@@ -109,11 +120,59 @@ class Database {
         return $connection;
     }
 
+    /** Returns connection object */
+    public function getConnection() {
+        return $this->connection;
+    }
 
 
+
+    /** Performs SQL Injection on given query variable and returns it (requires char for the type of the attribute and the new value) */
+    public static function sqlInjection($queryVariable, $typeChar, $newValue) {
+        try {
+            $queryVariable->bind_param($typeChar, $newValue);
+        } catch (Exception) {
+            throw new SQLInjectionException("Failed to bind parameters: " . $queryVariable->error);
+        }
+        return $queryVariable;
+    }
+
+
+
+    /** Performs a 'SELECT * FROM' query on the given table and returns the results */
+    public function selectAllFromTable($table) {
+        try {
+            $selection = mysqli_query($this->connection, "SELECT * FROM {$table};");
+        } catch (Exception) {
+            throw new SQLExecutionException("Failed to execute selection query: " . mysqli_error($this->connection));
+        }
+        return $selection;
+    }
+
+    /** Executes SQL query (no return) */
+    public function sqlExecute($queryVariable) {
+        try {
+            $queryVariable->execute();
+        } catch (Exception) {
+            throw new SQLExecutionException("Failed to execute SQL query: " . mysqli_error($this->connection));
+        }   
+    }
+
+    /** Executes a 'SELECT' SQL query and returns the results */
+    public function sqlExecuteSelection($queryVariable) {
+        try {
+            $queryVariable->execute();
+        } catch (Exception) {
+            throw new SQLExecutionException("Failed to execute selection query: " . $queryVariable->error);
+        }
+        $selection = $queryVariable->get_result();
+        //$query = $query->fetch_assoc();
+        return $selection;
+    }
+    
     /** Prepares a 'SELECT' query string and returns it. Obs.: 'queryArgs' is an associative array (queryArgs=[valuesSelected, orderBy, groupBy, innerJoin])*/
-    public static function prepareSelectQuery($table, $queryArgs=[]) {
-        $query = "SELECT";    
+    public function prepareSelectQuery($table, $queryArgs=[]) {
+        $query = "SELECT";
         extract($queryArgs);
 
         // valuesSelected
@@ -146,6 +205,7 @@ class Database {
 
         // inner join
         if (isset($innerJoin)) {
+            $innerJoin = (array)$innerJoin;
             foreach ($innerJoin as $value) {
                 $query .= " INNER JOIN {$value}";
             }
@@ -153,50 +213,28 @@ class Database {
 
         // end
         $query .= ";";
+        
+        try {
+            $query = $this->connection->prepare($query);
+        } catch (Exception) {
+            throw new SQLPreparationException("Failed to prepare SQL query: " . mysqli_error($this->connection));
+        };
+
         return $query;
     }
 
     /** Prepares a 'INSERT' query string and returns it*/
-    public static function prepareInsertQuery($table, $values) { // $values["assoc" => "iative"]
+    public function prepareInsertQuery($table, $values) { // $values["assoc" => "iative"]
         // TODO
     }
 
     /** Prepares a 'UPDATE' query string and returns it*/
-    public static function prepareUpdateQuery($table, $id, $newValues) { // $newValues["assoc" => "iative"]
+    public function prepareUpdateQuery($table, $id, $newValues) { // $newValues["assoc" => "iative"]
         // TODO
     }
 
     /** Prepares a 'DELETE' query string and returns it*/
-    public static function prepareDeleteQuery($table, $id) {
+    public function prepareDeleteQuery($table, $id) {
         // TODO
-    }
-
-    /** Performs SQL Injection on given query variable and returns it (requires char for the type of the attribute and the new value) */
-    public static function sqlInjection($queryVariable, $typeChar, $newValue) {
-        $queryVariable->bind_param($typeChar, $newValue);
-        return $queryVariable;
-    }
-
-
-
-    /** Performs a 'SELECT * FROM' query on the given table and returns the results */
-    public function selectAllFromTable($table) {
-        $selection = mysqli_query($this->connection, "SELECT * FROM {$table};");
-        return $selection;
-    }
-
-    /** Executes SQL query (no return) */
-    public function sqlExecute($queryVariable) {
-        //$queryVariable->execute(); // apagar esta linha se a próxima funcionar
-        $selection = mysqli_query($this->connection, $queryVariable);
-    }
-
-    /** Executes a 'SELECT' SQL query and returns the results */
-    public function sqlExecuteSelection($queryVariable) {
-        //$queryVariable->execute(); // apagar esta linha se a próxima funcionar
-        $selection = mysqli_query($this->connection, $queryVariable);
-        $query = $queryVariable->get_result();
-        $query = $query->fetch_assoc();
-        return $query;
     }
 }

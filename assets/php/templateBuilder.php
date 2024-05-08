@@ -77,7 +77,7 @@ function createVehicleBlock($vehicle, $brand, $mainPhoto) {
 }
 
 /** Creates a vehicle grid ans returns it */
-function createVehicleGrid($connection, $vehicleList) {
+function createVehicleGrid($db, $vehicleList) {
     $content = '';
 
     $content .= '<div class="grade-ofertas">';
@@ -86,30 +86,51 @@ function createVehicleGrid($connection, $vehicleList) {
     while ($vehicle = mysqli_fetch_assoc($vehicleList)) { // Generating blocks for the vehicle grid
         $id = $vehicle['id'];
 
-        // Doing SQL injection the safe way
-        $brand = prepareSelectQuery(
-            "veiculo AS v", [
-                "valuesSelected" => "m.nome",
-                "innerJoin"      => ["linha AS l ON l.id = v.id_linha", "marca AS m ON m.id = l.id_marca WHERE v.id = ?"]
-            ]
-        );
-        $brand = sqlInjectionAndExecuteAndFetch($brand, 'i', $id);
+        // SQL preparation-injection-execution -> brand
+        try {
+            $brand = $db->prepareSelectQuery(
+                "vehicles AS v", [
+                    "valuesSelected" => "m.nome",
+                    "innerJoin"      => ["models AS l ON l.id = v.id_linha", "brands AS m ON m.id = l.id_marca WHERE v.id = ?"]
+                ]
+            );
+            $brand = $db->sqlInjection($brand, 'i', $id);
+            $brand = $db->sqlExecuteSelection($brand);
+        } catch (SQLPreparationException $e) {
+            echo '<script>console.log("' . $e->getMessage() . '")</script>';
+        } catch (SQLInjectionException $e) {
+            echo '<script>console.log("' . $e->getMessage() . '")</script>';
+        } catch (SQLExecutionException $e) {
+            echo '<script>console.log("' . $e->getMessage() . '")</script>';
+        }
 
-        $mainPhoto = prepareSelectQuery(
-            "veiculo AS v", [
-                "valuesSelected" => ["fv.diretorio_fotos", "fv.foto_principal"],
-                "innerJoin"      => "fotos_veiculo AS fv ON fv.id = ?"
-            ]
-        );
-        $mainPhoto = sqlInjectionAndExecuteAndFetch($mainPhoto, 'i', $id);
+        // SQL preparation-injection-execution -> mainPhoto
+        try {
+            $mainPhoto = $db->prepareSelectQuery(
+                "vehicles AS v", [
+                    "valuesSelected" => ["fv.diretorio_fotos", "fv.foto_principal"],
+                    "innerJoin"      => "vehicle_photos AS fv ON fv.id = ?"
+                ]
+            );
+            $mainPhoto = $db->sqlInjection($mainPhoto, 'i', $id);
+            $mainPhoto = $db->sqlExecuteSelection($mainPhoto);
+        } catch (SQLPreparationException $e) {
+            echo '<script>console.log("' . $e->getMessage() . '")</script>';
+        } catch (SQLInjectionException $e) {
+            echo '<script>console.log("' . $e->getMessage() . '")</script>';
+        } catch (SQLExecutionException $e) {
+            echo '<script>console.log("' . $e->getMessage() . '")</script>';
+        }
         
         array_push($infoList, ["vehicle" => $vehicle, "brand" => $brand, "mainPhoto" => $mainPhoto]);
     }
 
+    echo '<script>console.log("Chegou no createVehicleBlock")</script>';
     foreach ($infoList as $info) {
         createVehicleBlock($info["vehicle"], $info["brand"], $info["mainPhoto"]);
     }
+    echo '<script>console.log("Saiu do createVehicleBlock")</script>';
 
-    echo '<script src="scripts/script.js"></script>';
-    echo "</div>";
+    $content .= "</div>";
+    return $content;
 }

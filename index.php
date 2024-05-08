@@ -25,9 +25,7 @@ include "services/database/Database.php";
 try {
     $db = new Database($dbServer, $dbUser, $dbPassword, $dbDatabase);
 } catch (Exception) {
-    // echo "<script>console.logNão foi possível conectar o banco de dados.</script> " . mysqli_connect_error();
-    // TODO: JS code for a console.log above or something like it.
-    // Obs.: shouldn't be an echo that shows up on screen.
+    echo '<script>console.log("Não foi possível conectar ao banco de dados (' . mysqli_connect_error() . ').")</script>';
 }
 
 // Database -> Variables
@@ -38,9 +36,8 @@ try {
     $modelList          = $db->selectAllFromTable("models");
     $vehiclePhotosList  = $db->selectAllFromTable("vehicle_photos");
 } catch (Exception) {
+    echo '<script>console.log("Erro ao criar variáveis cujo valor vem do banco de dados (' . mysqli_error($db->getConnection()) . ').")</script>';
     // echo "SQL ERROR " . mysqli_error($connection);
-    // TODO: JS code for a console.log above or something like it.
-    // Obs.: shouldn't be an echo that shows up on screen.
 }
 
 // Master layout
@@ -67,7 +64,9 @@ if ($_GET['pagina'] === "home") {
     $content .= $banner;
     $content .= $stockHeader;
     $content .= createFilterDropdownMenu($brandList);
-    $content .= createVehicleGrid($connection, $vehicleList);
+    echo '<script>console.log("Chegou no createVehicleGrid")</script>';
+    $content .= createVehicleGrid($db, $vehicleList);
+    echo '<script>console.log("Passou do createVehicleGrid")</script>';
     $content .= "</div>";
 }
 
